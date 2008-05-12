@@ -1,0 +1,67 @@
+DESCRIPTION="Mozilla runtime package that can be used to bootstrap XUL+XPCOM applications"
+HOMEPAGE="http://developer.mozilla.org/en/docs/XULRunner"
+SRC_URI="
+	mirror://gentoo/${P}-source.tar.bz2
+	mirror://gentoo/${PN}-1.8.1.13-patches-0.1.tar.bz2
+"
+SRC_DIR="mozilla"
+
+# export USE_PTHREADS=1
+export BUILD_OFFICIAL=1
+export BUILD_OPT=1
+export MOZ_CO_PROJECT=xulrunner
+export MOZILLA_CLIENT=1
+export MOZILLA_FIVE_HOME=/usr/lib/${PN}
+export MOZILLA_OFFICIAL=1
+export NO_STATIC_LIB=1
+export WANT_AUTOCONF=2.1
+
+PKG_NAMES="${PN} ${PN}-devel"
+PKG_HINTS="setup devel"
+PKG_CONTENTS[0]="--exclude=${PN}-config --exclude=*.dll.a
+                 usr/bin/ ${MOZILLA_FIVE_HOME#/} usr/share/doc/"
+PKG_CONTENTS[1]="usr/bin/${PN}-config usr/include/ usr/lib/pkgconfig/
+                 ${MOZILLA_FIVE_HOME#/}/*.dll.a usr/share/idl/"
+
+DIFF_EXCLUDES="calendar mail mailnews nsprpub nss sun-java"
+
+CYGPORT_USE_UNSTABLE_API=1
+src_unpack_hook() {
+	cygpatch ../patch/*
+}
+
+src_compile() {
+	cd ${S}
+	autoconf || error "autoconf failed"
+
+	cd ${B}
+	cygconf # .mozconfig is part of the patch
+	cygmake -j1
+}
+
+src_install() {
+	cd ${B}
+	cyginstall -j1
+
+	dodir /usr/bin
+	mv ${D}${MOZILLA_FIVE_HOME}/*.dll ${D}/usr/bin/
+
+	dodir /usr/include
+	mv ${D}${MOZILLA_FIVE_HOME}/include ${D}/usr/include/${PN}
+
+	dodir /usr/share/idl
+	mv ${D}${MOZILLA_FIVE_HOME}/idl ${D}/usr/share/idl/${PN}
+
+	sed -e "s|${MOZILLA_FIVE_HOME}/include|/usr/include/${PN}|g" \
+		-e "s|${MOZILLA_FIVE_HOME}/idl|/usr/share/idl/${PN}|g" \
+		-e 's|-lxpcom|-lxpcom -lxul|' \
+		-e 's| -Wl,-R.*||g' \
+		-i ${D}/usr/lib/pkgconfig/*.pc ${D}/usr/bin/${PN}-config
+
+	dodir /etc/gre.d
+	cat > ${D}/etc/gre.d/${PN}.conf <<-_EOF
+		[${PV}]
+		GRE_PATH=${MOZILLA_FIVE_HOME}
+		${PN}=true
+		_EOF
+}
