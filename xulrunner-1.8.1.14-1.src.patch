@@ -1,4 +1,3 @@
-diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x config.cache -x config.log -x config.status -x config.h -x '*config.h.in' -x ABOUT-NLS -x Makefile.in.in -x Makevars.template -x '*SlackBuild*' -x '*.egg-info' -x '*.class' -x '*.pyc' -x '*.mo' -x '*.gmo' -x '*.orig' -x '*.rej' -x '*.spec' -x '*.temp' -x '*~' -x '*.stackdump' -x COPYING -x INSTALL -x compile -x config-ml.in -x config.guess -x config.sub -x depcomp -x elisp-comp -x install-sh -x libtool.m4 -x ltoptions.m4 -x ltsugar.m4 -x ltversion.m4 -x 'lt~obsolete.m4' -x ltmain.sh -x mdate-sh -x missing -x mkinstalldirs -x py-compile -x symlink-tree -x texinfo.tex -x ylwrap -x config.rpath -x configure -x omf.make -x xmldocs.make -x gnome-doc-utils.make -x gnome-doc-utils.m4 -x intltool.m4 -x intltool-extract -x intltool-extract.in -x intltool-merge -x intltool-merge.in -x intltool-update -x intltool-update.in -x calendar -x mail -x mailnews -x nsprpub -x nss -x sun-java origsrc/mozilla/.mozconfig src/mozilla/.mozconfig
 --- origsrc/mozilla/.mozconfig	1969-12-31 18:00:00.000000000 -0600
 +++ src/mozilla/.mozconfig	2008-05-12 09:44:51.609375000 -0500
 @@ -0,0 +1,43 @@
@@ -45,7 +44,6 @@ diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x
 +ac_add_options --with-system-png
 +ac_add_options --with-system-zlib
 +mk_add_options MOZ_CO_PROJECT=xulrunner
-diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x config.cache -x config.log -x config.status -x config.h -x '*config.h.in' -x ABOUT-NLS -x Makefile.in.in -x Makevars.template -x '*SlackBuild*' -x '*.egg-info' -x '*.class' -x '*.pyc' -x '*.mo' -x '*.gmo' -x '*.orig' -x '*.rej' -x '*.spec' -x '*.temp' -x '*~' -x '*.stackdump' -x COPYING -x INSTALL -x compile -x config-ml.in -x config.guess -x config.sub -x depcomp -x elisp-comp -x install-sh -x libtool.m4 -x ltoptions.m4 -x ltsugar.m4 -x ltversion.m4 -x 'lt~obsolete.m4' -x ltmain.sh -x mdate-sh -x missing -x mkinstalldirs -x py-compile -x symlink-tree -x texinfo.tex -x ylwrap -x config.rpath -x configure -x omf.make -x xmldocs.make -x gnome-doc-utils.make -x gnome-doc-utils.m4 -x intltool.m4 -x intltool-extract -x intltool-extract.in -x intltool-merge -x intltool-merge.in -x intltool-update -x intltool-update.in -x calendar -x mail -x mailnews -x nsprpub -x nss -x sun-java origsrc/mozilla/config/rules.mk src/mozilla/config/rules.mk
 --- origsrc/mozilla/config/rules.mk	2008-05-11 19:43:17.640625000 -0500
 +++ src/mozilla/config/rules.mk	2008-05-12 07:14:22.640625000 -0500
 @@ -157,9 +157,11 @@
@@ -88,7 +86,6 @@ diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x
  $(IMPORT_LIBRARY): $(SHARED_LIBRARY)
  endif
  
-diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x config.cache -x config.log -x config.status -x config.h -x '*config.h.in' -x ABOUT-NLS -x Makefile.in.in -x Makevars.template -x '*SlackBuild*' -x '*.egg-info' -x '*.class' -x '*.pyc' -x '*.mo' -x '*.gmo' -x '*.orig' -x '*.rej' -x '*.spec' -x '*.temp' -x '*~' -x '*.stackdump' -x COPYING -x INSTALL -x compile -x config-ml.in -x config.guess -x config.sub -x depcomp -x elisp-comp -x install-sh -x libtool.m4 -x ltoptions.m4 -x ltsugar.m4 -x ltversion.m4 -x 'lt~obsolete.m4' -x ltmain.sh -x mdate-sh -x missing -x mkinstalldirs -x py-compile -x symlink-tree -x texinfo.tex -x ylwrap -x config.rpath -x configure -x omf.make -x xmldocs.make -x gnome-doc-utils.make -x gnome-doc-utils.m4 -x intltool.m4 -x intltool-extract -x intltool-extract.in -x intltool-merge -x intltool-merge.in -x intltool-update -x intltool-update.in -x calendar -x mail -x mailnews -x nsprpub -x nss -x sun-java origsrc/mozilla/configure.in src/mozilla/configure.in
 --- origsrc/mozilla/configure.in	2008-05-11 19:43:17.562500000 -0500
 +++ src/mozilla/configure.in	2008-05-12 00:51:25.343750000 -0500
 @@ -175,7 +175,7 @@
@@ -318,7 +315,6 @@ diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x
      HOST_CC="\$(CYGWIN_WRAPPER) $HOST_CC"
      HOST_CXX="\$(CYGWIN_WRAPPER) $HOST_CXX"
      CC="\$(CYGWIN_WRAPPER) $CC"
-diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x config.cache -x config.log -x config.status -x config.h -x '*config.h.in' -x ABOUT-NLS -x Makefile.in.in -x Makevars.template -x '*SlackBuild*' -x '*.egg-info' -x '*.class' -x '*.pyc' -x '*.mo' -x '*.gmo' -x '*.orig' -x '*.rej' -x '*.spec' -x '*.temp' -x '*~' -x '*.stackdump' -x COPYING -x INSTALL -x compile -x config-ml.in -x config.guess -x config.sub -x depcomp -x elisp-comp -x install-sh -x libtool.m4 -x ltoptions.m4 -x ltsugar.m4 -x ltversion.m4 -x 'lt~obsolete.m4' -x ltmain.sh -x mdate-sh -x missing -x mkinstalldirs -x py-compile -x symlink-tree -x texinfo.tex -x ylwrap -x config.rpath -x configure -x omf.make -x xmldocs.make -x gnome-doc-utils.make -x gnome-doc-utils.m4 -x intltool.m4 -x intltool-extract -x intltool-extract.in -x intltool-merge -x intltool-merge.in -x intltool-update -x intltool-update.in -x calendar -x mail -x mailnews -x nsprpub -x nss -x sun-java origsrc/mozilla/embedding/browser/gtk/tests/Makefile.in src/mozilla/embedding/browser/gtk/tests/Makefile.in
 --- origsrc/mozilla/embedding/browser/gtk/tests/Makefile.in	2008-05-11 19:42:21.781250000 -0500
 +++ src/mozilla/embedding/browser/gtk/tests/Makefile.in	2008-05-11 23:01:13.281250000 -0500
 @@ -65,7 +65,7 @@
@@ -330,7 +326,6 @@ diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x
  
  # ENABLE_GNOME=1
  
-diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x config.cache -x config.log -x config.status -x config.h -x '*config.h.in' -x ABOUT-NLS -x Makefile.in.in -x Makevars.template -x '*SlackBuild*' -x '*.egg-info' -x '*.class' -x '*.pyc' -x '*.mo' -x '*.gmo' -x '*.orig' -x '*.rej' -x '*.spec' -x '*.temp' -x '*~' -x '*.stackdump' -x COPYING -x INSTALL -x compile -x config-ml.in -x config.guess -x config.sub -x depcomp -x elisp-comp -x install-sh -x libtool.m4 -x ltoptions.m4 -x ltsugar.m4 -x ltversion.m4 -x 'lt~obsolete.m4' -x ltmain.sh -x mdate-sh -x missing -x mkinstalldirs -x py-compile -x symlink-tree -x texinfo.tex -x ylwrap -x config.rpath -x configure -x omf.make -x xmldocs.make -x gnome-doc-utils.make -x gnome-doc-utils.m4 -x intltool.m4 -x intltool-extract -x intltool-extract.in -x intltool-merge -x intltool-merge.in -x intltool-update -x intltool-update.in -x calendar -x mail -x mailnews -x nsprpub -x nss -x sun-java origsrc/mozilla/intl/uconv/native/Makefile.in src/mozilla/intl/uconv/native/Makefile.in
 --- origsrc/mozilla/intl/uconv/native/Makefile.in	2006-04-13 13:56:02.000000000 -0500
 +++ src/mozilla/intl/uconv/native/Makefile.in	2008-05-11 21:11:01.421875000 -0500
 @@ -64,6 +64,6 @@
@@ -341,7 +336,6 @@ diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x
 +LOCAL_INCLUDES = -I$(srcdir)/../util -I$(srcdir)/../src -I.
  
  include $(topsrcdir)/config/rules.mk
-diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x config.cache -x config.log -x config.status -x config.h -x '*config.h.in' -x ABOUT-NLS -x Makefile.in.in -x Makevars.template -x '*SlackBuild*' -x '*.egg-info' -x '*.class' -x '*.pyc' -x '*.mo' -x '*.gmo' -x '*.orig' -x '*.rej' -x '*.spec' -x '*.temp' -x '*~' -x '*.stackdump' -x COPYING -x INSTALL -x compile -x config-ml.in -x config.guess -x config.sub -x depcomp -x elisp-comp -x install-sh -x libtool.m4 -x ltoptions.m4 -x ltsugar.m4 -x ltversion.m4 -x 'lt~obsolete.m4' -x ltmain.sh -x mdate-sh -x missing -x mkinstalldirs -x py-compile -x symlink-tree -x texinfo.tex -x ylwrap -x config.rpath -x configure -x omf.make -x xmldocs.make -x gnome-doc-utils.make -x gnome-doc-utils.m4 -x intltool.m4 -x intltool-extract -x intltool-extract.in -x intltool-merge -x intltool-merge.in -x intltool-update -x intltool-update.in -x calendar -x mail -x mailnews -x nsprpub -x nss -x sun-java origsrc/mozilla/xpcom/base/nsUUIDGenerator.cpp src/mozilla/xpcom/base/nsUUIDGenerator.cpp
 --- origsrc/mozilla/xpcom/base/nsUUIDGenerator.cpp	2006-08-15 14:28:12.000000000 -0500
 +++ src/mozilla/xpcom/base/nsUUIDGenerator.cpp	2008-05-11 22:21:40.656250000 -0500
 @@ -52,6 +52,13 @@
@@ -358,7 +352,6 @@ diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x
  NS_IMPL_THREADSAFE_ISUPPORTS1(nsUUIDGenerator, nsIUUIDGenerator)
  
  nsUUIDGenerator::nsUUIDGenerator()
-diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x config.cache -x config.log -x config.status -x config.h -x '*config.h.in' -x ABOUT-NLS -x Makefile.in.in -x Makevars.template -x '*SlackBuild*' -x '*.egg-info' -x '*.class' -x '*.pyc' -x '*.mo' -x '*.gmo' -x '*.orig' -x '*.rej' -x '*.spec' -x '*.temp' -x '*~' -x '*.stackdump' -x COPYING -x INSTALL -x compile -x config-ml.in -x config.guess -x config.sub -x depcomp -x elisp-comp -x install-sh -x libtool.m4 -x ltoptions.m4 -x ltsugar.m4 -x ltversion.m4 -x 'lt~obsolete.m4' -x ltmain.sh -x mdate-sh -x missing -x mkinstalldirs -x py-compile -x symlink-tree -x texinfo.tex -x ylwrap -x config.rpath -x configure -x omf.make -x xmldocs.make -x gnome-doc-utils.make -x gnome-doc-utils.m4 -x intltool.m4 -x intltool-extract -x intltool-extract.in -x intltool-merge -x intltool-merge.in -x intltool-update -x intltool-update.in -x calendar -x mail -x mailnews -x nsprpub -x nss -x sun-java origsrc/mozilla/xpcom/build/nsXPCOMPrivate.h src/mozilla/xpcom/build/nsXPCOMPrivate.h
 --- origsrc/mozilla/xpcom/build/nsXPCOMPrivate.h	2006-01-09 13:03:09.000000000 -0600
 +++ src/mozilla/xpcom/build/nsXPCOMPrivate.h	2008-05-12 07:38:59.734375000 -0500
 @@ -210,6 +210,16 @@
@@ -378,7 +371,6 @@ diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x
  #else // Unix
  
  #define XPCOM_DLL "libxpcom"MOZ_DLL_SUFFIX
-diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x config.cache -x config.log -x config.status -x config.h -x '*config.h.in' -x ABOUT-NLS -x Makefile.in.in -x Makevars.template -x '*SlackBuild*' -x '*.egg-info' -x '*.class' -x '*.pyc' -x '*.mo' -x '*.gmo' -x '*.orig' -x '*.rej' -x '*.spec' -x '*.temp' -x '*~' -x '*.stackdump' -x COPYING -x INSTALL -x compile -x config-ml.in -x config.guess -x config.sub -x depcomp -x elisp-comp -x install-sh -x libtool.m4 -x ltoptions.m4 -x ltsugar.m4 -x ltversion.m4 -x 'lt~obsolete.m4' -x ltmain.sh -x mdate-sh -x missing -x mkinstalldirs -x py-compile -x symlink-tree -x texinfo.tex -x ylwrap -x config.rpath -x configure -x omf.make -x xmldocs.make -x gnome-doc-utils.make -x gnome-doc-utils.m4 -x intltool.m4 -x intltool-extract -x intltool-extract.in -x intltool-merge -x intltool-merge.in -x intltool-update -x intltool-update.in -x calendar -x mail -x mailnews -x nsprpub -x nss -x sun-java origsrc/mozilla/xpcom/ds/nsCRT.h src/mozilla/xpcom/ds/nsCRT.h
 --- origsrc/mozilla/xpcom/ds/nsCRT.h	2005-06-23 18:42:01.000000000 -0500
 +++ src/mozilla/xpcom/ds/nsCRT.h	2008-05-12 08:54:41.812500000 -0500
 @@ -262,6 +262,9 @@
@@ -391,7 +383,6 @@ diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x
  #elif defined(XP_UNIX) || defined(XP_BEOS)
    #define FILE_PATH_SEPARATOR       "/"
    #define FILE_ILLEGAL_CHARACTERS   ""
-diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x config.cache -x config.log -x config.status -x config.h -x '*config.h.in' -x ABOUT-NLS -x Makefile.in.in -x Makevars.template -x '*SlackBuild*' -x '*.egg-info' -x '*.class' -x '*.pyc' -x '*.mo' -x '*.gmo' -x '*.orig' -x '*.rej' -x '*.spec' -x '*.temp' -x '*~' -x '*.stackdump' -x COPYING -x INSTALL -x compile -x config-ml.in -x config.guess -x config.sub -x depcomp -x elisp-comp -x install-sh -x libtool.m4 -x ltoptions.m4 -x ltsugar.m4 -x ltversion.m4 -x 'lt~obsolete.m4' -x ltmain.sh -x mdate-sh -x missing -x mkinstalldirs -x py-compile -x symlink-tree -x texinfo.tex -x ylwrap -x config.rpath -x configure -x omf.make -x xmldocs.make -x gnome-doc-utils.make -x gnome-doc-utils.m4 -x intltool.m4 -x intltool-extract -x intltool-extract.in -x intltool-merge -x intltool-merge.in -x intltool-update -x intltool-update.in -x calendar -x mail -x mailnews -x nsprpub -x nss -x sun-java origsrc/mozilla/xpcom/glue/standalone/Makefile.in src/mozilla/xpcom/glue/standalone/Makefile.in
 --- origsrc/mozilla/xpcom/glue/standalone/Makefile.in	2008-05-11 19:42:33.890625000 -0500
 +++ src/mozilla/xpcom/glue/standalone/Makefile.in	2008-05-11 22:50:47.062500000 -0500
 @@ -64,7 +64,7 @@
@@ -403,7 +394,6 @@ diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x
  LINKSRC = nsGlueLinkingDlopen.cpp
  endif
  ifeq (OS2,$(OS_ARCH))
-diff -urN -x CYGWIN-PATCHES -x 'aclocal.m4~' -x aclocal.m4t -x autom4te.cache -x config.cache -x config.log -x config.status -x config.h -x '*config.h.in' -x ABOUT-NLS -x Makefile.in.in -x Makevars.template -x '*SlackBuild*' -x '*.egg-info' -x '*.class' -x '*.pyc' -x '*.mo' -x '*.gmo' -x '*.orig' -x '*.rej' -x '*.spec' -x '*.temp' -x '*~' -x '*.stackdump' -x COPYING -x INSTALL -x compile -x config-ml.in -x config.guess -x config.sub -x depcomp -x elisp-comp -x install-sh -x libtool.m4 -x ltoptions.m4 -x ltsugar.m4 -x ltversion.m4 -x 'lt~obsolete.m4' -x ltmain.sh -x mdate-sh -x missing -x mkinstalldirs -x py-compile -x symlink-tree -x texinfo.tex -x ylwrap -x config.rpath -x configure -x omf.make -x xmldocs.make -x gnome-doc-utils.make -x gnome-doc-utils.m4 -x intltool.m4 -x intltool-extract -x intltool-extract.in -x intltool-merge -x intltool-merge.in -x intltool-update -x intltool-update.in -x calendar -x mail -x mailnews -x nsprpub -x nss -x sun-java origsrc/mozilla/xpcom/stub/Makefile.in src/mozilla/xpcom/stub/Makefile.in
 --- origsrc/mozilla/xpcom/stub/Makefile.in	2008-05-11 19:42:33.250000000 -0500
 +++ src/mozilla/xpcom/stub/Makefile.in	2008-05-12 08:42:05.875000000 -0500
 @@ -68,7 +68,7 @@
