@@ -1,0 +1,470 @@
+--- origsrc/mozilla/.mozconfig	1969-12-31 18:00:00.000000000 -0600
++++ src/mozilla/.mozconfig	2008-12-14 12:54:43.790750000 -0600
+@@ -0,0 +1,43 @@
++ac_add_options --disable-debug
++ac_add_options --disable-install
++ac_add_options --disable-ipv6
++ac_add_options --disable-javaxpcom
++ac_add_options --disable-pedantic
++ac_add_options --disable-profilelocking
++ac_add_options --disable-profilesharing
++ac_add_options --disable-strip
++ac_add_options --disable-strip-libs
++ac_add_options --disable-tests
++ac_add_options --disable-updater
++ac_add_options --disable-xinerama
++ac_add_options --disable-xprint
++ac_add_options --enable-application=xulrunner
++ac_add_options --enable-crypto
++ac_add_options --enable-default-toolkit=gtk2
++ac_add_options --enable-embedding-tests
++ac_add_options --enable-gnomeui
++ac_add_options --enable-gnomevfs
++ac_add_options --enable-image-encoder=all
++ac_add_options --enable-jsd
++ac_add_options --enable-mathml
++ac_add_options --enable-native-uconv
++ac_add_options --enable-oji
++ac_add_options --enable-optimize=-O2
++ac_add_options --enable-pango
++ac_add_options --enable-reorder
++ac_add_options --enable-single-profile
++ac_add_options --enable-svg
++ac_add_options --enable-svg-renderer=cairo
++ac_add_options --enable-system-cairo
++ac_add_options --enable-system-hunspell
++ac_add_options --enable-system-lcms
++ac_add_options --enable-system-sqlite
++ac_add_options --enable-xpctools
++ac_add_options --with-default-mozilla-five-home=/usr/lib/xulrunner
++ac_add_options --with-system-bz2
++ac_add_options --with-system-jpeg
++ac_add_options --with-system-nspr
++ac_add_options --with-system-nss
++ac_add_options --with-system-png
++ac_add_options --with-system-zlib
++mk_add_options MOZ_CO_PROJECT=xulrunner
+--- origsrc/mozilla/config/rules.mk	2008-12-14 11:37:44.290750000 -0600
++++ src/mozilla/config/rules.mk	2008-12-14 12:54:43.884500000 -0600
+@@ -159,9 +159,11 @@ ifeq ($(OS_ARCH),OS2)
+ DEF_FILE		:= $(SHARED_LIBRARY:.dll=.def)
+ endif
+ 
+-ifneq (,$(filter OS2 WINNT WINCE,$(OS_ARCH)))
++ifneq (,$(filter OS2 WINNT WINCE CYGWIN,$(OS_ARCH)))
++ifndef IS_COMPONENT
+ IMPORT_LIBRARY		:= $(LIB_PREFIX)$(LIBRARY_NAME).$(IMPORT_LIB_SUFFIX)
+ endif
++endif
+ 
+ ifdef MOZ_ENABLE_LIBXUL
+ EMBED_MANIFEST_AT=2
+@@ -546,7 +548,7 @@ endif 
+ #
+ # MINGW32
+ #
+-ifeq ($(OS_ARCH),WINNT)
++ifneq (,$(filter CYGWIN WINNT,$(OS_ARCH)))
+ ifdef GNU_CC
+ ifndef IS_COMPONENT
+ DSO_LDOPTS += -Wl,--out-implib -Wl,$(IMPORT_LIBRARY)
+@@ -746,7 +748,7 @@ ifdef BEOS_ADDON_WORKAROUND
+ 	( cd $(FINAL_TARGET)/components && $(CC) -nostart -o $(SHARED_LIBRARY).stub $(SHARED_LIBRARY) )
+ endif
+ else # ! IS_COMPONENT
+-ifneq (,$(filter OS2 WINNT WINCE,$(OS_ARCH)))
++ifneq (,$(filter OS2 WINNT WINCE CYGWIN,$(OS_ARCH)))
+ 	$(INSTALL) $(IFLAGS2) $(IMPORT_LIBRARY) $(DIST)/lib
+ else
+ 	$(INSTALL) $(IFLAGS2) $(SHARED_LIBRARY) $(DIST)/lib
+@@ -1043,7 +1045,7 @@ endif
+ 	$(RANLIB) $@
+ 	@rm -f foodummyfilefoo $(SUB_LOBJS)
+ 
+-ifeq (,$(filter-out WINNT WINCE, $(OS_ARCH)))
++ifeq (,$(filter-out WINNT WINCE CYGWIN, $(OS_ARCH)))
+ $(IMPORT_LIBRARY): $(SHARED_LIBRARY)
+ endif
+ 
+--- origsrc/mozilla/configure.in	2008-12-14 11:37:46.009500000 -0600
++++ src/mozilla/configure.in	2008-12-14 12:42:00.915750000 -0600
+@@ -182,7 +182,7 @@ dnl Default to MSVC for win32
+ dnl ==============================================================
+ if test -z "$CROSS_COMPILE"; then
+ case "$target" in
+-*-cygwin*|*-mingw*|*-msvc*|*-mks*)
++*-mingw*|*-msvc*|*-mks*)
+     MAKE_VERSION=3.79
+     if test -z "$CC"; then CC=cl; fi
+     if test -z "$CXX"; then CXX=cl; fi
+@@ -441,7 +441,7 @@ case "$WINVER" in
+ esac
+ 
+ case "$target" in
+-*-cygwin*|*-mingw*|*-msvc*|*-mks*|*-wince)
++*-mingw*|*-msvc*|*-mks*|*-wince)
+     if test "$GCC" != "yes"; then
+         # Check to see if we are really running in a msvc environemnt
+         _WIN32_MSVC=1
+@@ -1048,6 +1048,10 @@ CYGWIN_9*|CYGWIN_ME*)
+     OS_ARCH='CYGWIN_NT-4.0'
+     OS_TARGET=WIN95
+     ;;
++CYGWIN_NT-5*)
++    OS_ARCH='CYGWIN'
++    OS_TARGET=CYGWIN
++    ;;
+ esac
+ 
+ #
+@@ -1061,9 +1065,12 @@ esac
+ #
+ 
+ case "$HOST_OS_ARCH" in
+-cygwin*|mingw*|mks*|msvc*)
++mingw*|mks*|msvc*)
+     HOST_OS_ARCH=WINNT
+     ;;
++cygwin*)
++    HOST_OS_ARCH=CYGWIN
++    ;;
+ linux*)
+     HOST_OS_ARCH=Linux
+     ;;
+@@ -1485,7 +1492,7 @@ case "$host" in
+     HOST_OPTIMIZE_FLAGS="${HOST_OPTIMIZE_FLAGS=-O3}"
+     ;;
+ 
+-*cygwin*|*mingw*|*mks*|*msvc*|*wince)
++*mingw*|*mks*|*msvc*|*wince)
+     if test -n "$_WIN32_MSVC"; then
+         HOST_AR=lib
+         HOST_AR_FLAGS='-NOLOGO -OUT:"$@"'
+@@ -1914,7 +1921,20 @@ case "$target" in
+ ;;
+ 
+ 
+-*-mingw*|*-cygwin*|*-msvc*|*-mks*)
++*-cygwin*)
++    CPPFLAGS="$CPPFLAGS -DGENTOO_NSPLUGINS_DIR=\\\"/usr/lib/mozilla/plugins\\\" -DGENTOO_NSBROWSER_PLUGINS_DIR=GENTOO_NSPLUGINS_DIR"
++    BIN_SUFFIX='.exe'
++    DLL_PREFIX=cyg
++    DLL_SUFFIX=.dll
++    DSO_LDOPTS='-shared -Wl,--enable-auto-image-base'
++    DSO_PIC_CFLAGS=
++    MKSHLIB='$(CXX) $(DSO_LDOPTS) -o $@'
++    MKCSHLIB='$(CC) $(DSO_LDOPTS) -o $@'
++    IMPORT_LIB_SUFFIX=dll.a
++    AC_DEFINE(_X86_)
++;;
++
++*-mingw*|*-msvc*|*-mks*)
+     DSO_CFLAGS=
+     DSO_PIC_CFLAGS=
+     DLL_SUFFIX=.dll
+@@ -2034,14 +2054,14 @@ case "$target" in
+ 	CYGPATH_S=cat
+ 	MOZ_BUILD_ROOT=`cd $MOZ_BUILD_ROOT && pwd -W`
+ 	;;
+-    *-cygwin*|*-msvc*|*-mks*)
++    *-msvc*|*-mks*)
+ 	CYGPATH_W="cygpath -a -w"
+ 	CYGPATH_S="sed -e s|\\\\|/|g"
+ 	MOZ_BUILD_ROOT=`$CYGPATH_W $MOZ_BUILD_ROOT | $CYGPATH_S`
+ 	;;
+     esac
+     case "$host" in
+-    *-mingw*|*-cygwin*|*-msvc*|*-mks*)
++    *-mingw*|*-msvc*|*-mks*)
+ 
+     if test -z "$MOZ_TOOLS"; then
+         AC_MSG_ERROR([MOZ_TOOLS is not set])
+@@ -2137,7 +2157,7 @@ case "$target" in
+ 
+ 
+     case "$host_os" in
+-    cygwin*|msvc*|mks*)
++    msvc*|mks*)
+         AC_MSG_WARN([Using a cygwin build environment is unsupported. Configure cannot check for the presence of necessary headers. Please upgrade to MozillaBuild; see http://developer.mozilla.org/en/docs/Windows_Build_Prerequisites])
+         ;;
+ 
+@@ -2543,7 +2563,7 @@ case "$target" in
+ *-openvms*)
+     NO_LD_ARCHIVE_FLAGS=
+     ;;
+-*-msvc*|*-mks*|*-mingw*|*-cygwin*|*-wince)
++*-msvc*|*-mks*|*-mingw*|*-wince)
+     if test -z "$GNU_CC"; then
+         NO_LD_ARCHIVE_FLAGS=
+     fi
+@@ -2586,7 +2606,7 @@ case "$target" in
+     *-darwin*)
+         MOZ_COMPONENTS_VERSION_SCRIPT_LDFLAGS='-Wl,-exported_symbols_list -Wl,$(BUILD_TOOLS)/gnu-ld-scripts/components-export-list'
+         ;;
+-    *-cygwin*|*-mingw*|*-mks*|*-msvc|*-wince)
++    *-mingw*|*-mks*|*-msvc|*-wince)
+         if test -n "$GNU_CC"; then
+            MOZ_COMPONENTS_VERSION_SCRIPT_LDFLAGS='-Wl,--version-script,$(BUILD_TOOLS)/gnu-ld-scripts/components-version-script'
+         fi
+@@ -3401,7 +3421,7 @@ if test "$ac_cv_func_gnu_get_libc_versio
+ fi
+ 
+ case $target_os in
+-    os2*|msvc*|mks*|cygwin*|mingw*|darwin*|wince*|beos*)
++    os2*|msvc*|mks*|mingw*|darwin*|wince*|beos*)
+         ;;
+     *)
+     
+@@ -4372,7 +4392,7 @@ darwin*)
+ esac
+ 
+ case "$target_os" in
+-    msvc*|mks*|cygwin*|mingw*)
++    msvc*|mks*|mingw*)
+         if test -z "$GNU_CC"; then 
+             XPC_IDISPATCH_SUPPORT=1
+             MOZ_NO_ACTIVEX_SUPPORT=
+@@ -5175,7 +5195,7 @@ fi
+ 
+ if test -n "$ACCESSIBILITY"; then
+ case "$target" in
+-*-mingw*|*-cygwin*|*-msvc*|*-mks*)
++*-mingw*|*-msvc*|*-mks*)
+     if test "$ac_cv_header_atlbase_h" = "no"; then
+         AC_MSG_ERROR([System header atlbase.h is not available. See http://developer.mozilla.org/en/docs/atlbase.h for details on fixing this problem.])
+     fi
+@@ -5376,7 +5396,7 @@ MOZ_ARG_ENABLE_BOOL(javaxpcom,
+ 
+ if test -n "${MOZ_JAVAXPCOM}"; then
+   case "$host_os" in
+-    cygwin*|msvc*|mks*)
++    msvc*|mks*)
+       if test -n "$JAVA_HOME"; then
+         JAVA_HOME=`cygpath -u \`cygpath -m -s "$JAVA_HOME"\``
+       fi
+@@ -5714,7 +5734,7 @@ dnl ====================================
+ dnl Installer
+ dnl ========================================================
+ case "$target_os" in
+-    aix*|solaris*|linux*|msvc*|mks*|cygwin*|mingw*|os2*|wince*)
++    aix*|solaris*|linux*|msvc*|mks*|mingw*|os2*|wince*)
+         MOZ_INSTALLER=1
+         ;;
+ esac
+@@ -5768,7 +5788,7 @@ MOZ_ARG_DISABLE_BOOL(updater,
+ # The Windows build requires the iconv command line utility
+ # in order to build the updater.
+ case "$target_os" in
+-    msvc*|mks*|cygwin*|mingw*|wince*)
++    msvc*|mks*|mingw*|wince*)
+         if test -n "$MOZ_UPDATER"; then
+             AC_MSG_CHECKING([for iconv])
+             AC_CHECK_PROGS(HOST_ICONV, $HOST_ICONV "iconv", "")
+@@ -5831,7 +5851,7 @@ fi
+ 
+ if test -n "$XPC_IDISPATCH_SUPPORT" -o -n "$MOZ_ACTIVEX_SCRIPTING_SUPPORT" -o -z "$MOZ_NO_ACTIVEX_SUPPORT"; then
+ case "$target" in
+-*-mingw*|*-cygwin*|*-msvc*|*-mks*)
++*-mingw*|*-msvc*|*-mks*)
+     if test "$ac_cv_header_atlbase_h" = "no"; then
+         AC_MSG_ERROR([System header atlbase.h is not available. See http://developer.mozilla.org/en/docs/atlbase.h for details on fixing this problem.])
+     fi
+@@ -5894,7 +5914,7 @@ if test -n "$MOZ_DISABLE_VISTA_SDK_REQUI
+     MOZ_DISABLE_PARENTAL_CONTROLS=1
+ else
+ case "$target" in
+-*-mingw*|*-cygwin*|*-msvc*|*-mks*)
++*-mingw*|*-msvc*|*-mks*)
+     if test "$ac_cv_header_wpcapi_h" = "no"; then
+         AC_MSG_ERROR([System header wpcapi.h is not available. See updated http://developer.mozilla.org/en/docs/wpcapi.h for details on fixing this problem.])
+     fi
+@@ -6114,7 +6134,7 @@ MOZ_DEBUG_ENABLE_DEFS="-DDEBUG -D_DEBUG"
+     beos*)
+         MOZ_DEBUG_ENABLE_DEFS="$MOZ_DEBUG_ENABLE_DEFS -DDEBUG_${USER}"
+         ;;
+-    msvc*|mks*|cygwin*|mingw*|os2*|wince*)
++    msvc*|mks*|mingw*|os2*|wince*)
+         MOZ_DEBUG_ENABLE_DEFS="$MOZ_DEBUG_ENABLE_DEFS -DDEBUG_`echo ${USERNAME} | sed -e 's| |_|g'`"
+         ;;
+     *) 
+@@ -6324,7 +6344,7 @@ if test "$MOZ_MEMORY"; then
+   solaris*)
+     AC_DEFINE(MOZ_MEMORY_SOLARIS)
+     ;;
+-  msvc*|mks*|cygwin*|mingw*)
++  msvc*|mks*|mingw*)
+     AC_DEFINE(MOZ_MEMORY_WINDOWS)
+     dnl XXX: should test for vc8sp1 here, otherwise patching the crt src
+     dnl will fail miserably
+@@ -7133,7 +7153,7 @@ MOZ_ARG_HEADER(Standalone module options
+ dnl Check for GLib and libIDL.
+ dnl ========================================================
+ case "$target_os" in
+-msvc*|mks*|cygwin*|mingw*|wince*)
++msvc*|mks*|mingw*|wince*)
+     SKIP_IDL_CHECK="yes"
+     ;;
+ *)
+@@ -7285,7 +7305,7 @@ mk_add_options MOZ_CO_MODULE=mozilla/oth
+   dnl answer should be anyway
+   MOZ_LIBART_CFLAGS='-I${DIST}/include/libart_lgpl'
+   case "$target_os" in
+-  msvc*|mks*|cygwin*|mingw*|wince*)
++  msvc*|mks*|mingw*|wince*)
+       MOZ_LIBART_LIBS='$(LIBXUL_DIST)/lib/$(LIB_PREFIX)moz_art_lgpl.$(IMPORT_LIB_SUFFIX)' 
+       ;;
+   os2*)
+@@ -8126,7 +8146,7 @@ case "$host_os" in
+ mingw*)
+     WIN_TOP_SRC=`cd $srcdir; pwd -W`
+     ;;
+-cygwin*|msvc*|mks*)
++msvc*|mks*)
+     HOST_CC="\$(CYGWIN_WRAPPER) $HOST_CC"
+     HOST_CXX="\$(CYGWIN_WRAPPER) $HOST_CXX"
+     CC="\$(CYGWIN_WRAPPER) $CC"
+--- origsrc/mozilla/embedding/browser/gtk/tests/Makefile.in	2007-09-23 22:44:29.000000000 -0500
++++ src/mozilla/embedding/browser/gtk/tests/Makefile.in	2008-12-14 12:54:26.056375000 -0600
+@@ -54,7 +54,7 @@ CPPSRCS         = \
+ 		TestGtkEmbedSocket.cpp \
+ 		TestGtkEmbedChild.cpp
+ 
+-SIMPLE_PROGRAMS = $(CPPSRCS:.cpp=)
++SIMPLE_PROGRAMS = $(CPPSRCS:.cpp==$(BIN_SUFFIX))
+ 
+ # ENABLE_GNOME=1
+ 
+--- origsrc/mozilla/intl/uconv/native/Makefile.in	2006-04-13 13:56:54.000000000 -0500
++++ src/mozilla/intl/uconv/native/Makefile.in	2008-12-14 12:54:43.900125000 -0600
+@@ -64,6 +64,6 @@ XPIDLSRCS	= \
+ 		nsINativeUConvService.idl \
+ 		$(NULL)
+ 
+-LOCAL_INCLUDES = -I$(srcdir)/../util -I$(srcdir)/../src
++LOCAL_INCLUDES = -I$(srcdir)/../util -I$(srcdir)/../src -I.
+ 
+ include $(topsrcdir)/config/rules.mk
+--- origsrc/mozilla/xpcom/base/nsUUIDGenerator.cpp	2007-07-08 02:08:50.000000000 -0500
++++ src/mozilla/xpcom/base/nsUUIDGenerator.cpp	2008-12-14 12:54:43.900125000 -0600
+@@ -52,6 +52,13 @@
+ 
+ #include "nsUUIDGenerator.h"
+ 
++#ifdef __CYGWIN__
++extern "C" {
++char *initstate(unsigned long seed, char *arg_state, long n);
++char *setstate(char *state);
++}
++#endif
++
+ NS_IMPL_THREADSAFE_ISUPPORTS1(nsUUIDGenerator, nsIUUIDGenerator)
+ 
+ nsUUIDGenerator::nsUUIDGenerator()
+--- origsrc/mozilla/xpcom/build/nsXPCOMPrivate.h	2007-08-17 22:48:16.000000000 -0500
++++ src/mozilla/xpcom/build/nsXPCOMPrivate.h	2008-12-14 12:54:43.931375000 -0600
+@@ -230,6 +230,16 @@ NS_GetFrozenFunctions(XPCOMFunctions *en
+ #define XPCOM_DLL "libxpcom"MOZ_DLL_SUFFIX
+ #define XUL_DLL   "libxul"MOZ_DLL_SUFFIX
+ 
++#elif defined(__CYGWIN__)
++
++#define XPCOM_SEARCH_KEY  "PATH"
++#define GRE_CONF_NAME     ".gre.config"
++#define GRE_CONF_PATH "/etc/gre.conf"
++#define GRE_CONF_DIR  "/etc/gre.d"
++#define GRE_USER_CONF_DIR ".gre.d"
++#define XPCOM_DLL         "cygxpcom.dll"
++#define XUL_DLL           "cygxul.dll"
++
+ #else // Unix
+ 
+ #define XPCOM_DLL "libxpcom"MOZ_DLL_SUFFIX
+--- origsrc/mozilla/xpcom/ds/nsCRT.h	2008-04-02 11:05:55.000000000 -0500
++++ src/mozilla/xpcom/ds/nsCRT.h	2008-12-14 12:51:34.400125000 -0600
+@@ -278,6 +278,9 @@ public:
+ #elif defined(XP_WIN) || defined(XP_OS2)
+   #define FILE_PATH_SEPARATOR        "\\"
+   #define OS_FILE_ILLEGAL_CHARACTERS "/:*?\"<>|"
++#elif defined(__CYGWIN__)
++  #define FILE_PATH_SEPARATOR       "/"
++  #define FILE_ILLEGAL_CHARACTERS   ":*?\"<>|"
+ #elif defined(XP_UNIX) || defined(XP_BEOS)
+   #define FILE_PATH_SEPARATOR        "/"
+   #define OS_FILE_ILLEGAL_CHARACTERS ""
+--- origsrc/mozilla/xpcom/glue/standalone/Makefile.in	2008-03-21 23:25:35.000000000 -0500
++++ src/mozilla/xpcom/glue/standalone/Makefile.in	2008-12-14 12:54:43.978250000 -0600
+@@ -62,7 +62,7 @@ endif
+ ifneq (,$(filter WINNT WINCE,$(OS_ARCH)))
+ LINKSRC = nsGlueLinkingWin.cpp
+ endif
+-ifneq (,$(filter AIX DragonFly FreeBSD Linux NetBSD OpenBSD SunOS,$(OS_ARCH)))
++ifneq (,$(filter AIX CYGWIN DragonFly FreeBSD Linux NetBSD OpenBSD SunOS,$(OS_ARCH)))
+ LINKSRC = nsGlueLinkingDlopen.cpp
+ endif
+ ifeq (OS2,$(OS_ARCH))
+--- origsrc/mozilla/xpcom/stub/Makefile.in	2008-04-30 02:30:59.000000000 -0500
++++ src/mozilla/xpcom/stub/Makefile.in	2008-12-14 12:54:44.040750000 -0600
+@@ -71,7 +71,7 @@ endif
+ 
+ # If we have an import library, then copy that to the SDK.  Otherwise,
+ # copy the shared library.
+-ifneq (,$(filter OS2 WINCE WINNT,$(OS_ARCH)))
++ifneq (,$(filter CYGWIN OS2 WINCE WINNT,$(OS_ARCH)))
+ SDK_LIBRARY = $(IMPORT_LIBRARY)
+ else
+ SDK_LIBRARY = $(SHARED_LIBRARY)
+@@ -85,26 +85,26 @@ FORCE_SHARED_LIB = 1
+ EXTRA_DSO_LDOPTS = $(LIBS_DIR)
+ 
+ DEPENDENT_LIBS_LIST += \
+-	$(LIB_PREFIX)nspr4$(DLL_SUFFIX) \
+-	$(LIB_PREFIX)plc4$(DLL_SUFFIX) \
+-	$(LIB_PREFIX)plds4$(DLL_SUFFIX) \
++	$(DLL_PREFIX)nspr4$(DLL_SUFFIX) \
++	$(DLL_PREFIX)plc4$(DLL_SUFFIX) \
++	$(DLL_PREFIX)plds4$(DLL_SUFFIX) \
+ 	$(NULL)
+ 
+ ifdef MOZ_ENABLE_LIBXUL
+ 
+ DEPENDENT_LIBS_LIST += \
+-	$(LIB_PREFIX)sqlite3$(DLL_SUFFIX) \
+-	$(LIB_PREFIX)nssutil3$(DLL_SUFFIX) \
+-	$(LIB_PREFIX)softokn3$(DLL_SUFFIX) \
+-	$(LIB_PREFIX)nss3$(DLL_SUFFIX) \
+-	$(LIB_PREFIX)ssl3$(DLL_SUFFIX) \
+-	$(LIB_PREFIX)smime3$(DLL_SUFFIX) \
++	$(DLL_PREFIX)sqlite3$(DLL_SUFFIX) \
++	$(DLL_PREFIX)nssutil3$(DLL_SUFFIX) \
++	$(DLL_PREFIX)softokn3$(DLL_SUFFIX) \
++	$(DLL_PREFIX)nss3$(DLL_SUFFIX) \
++	$(DLL_PREFIX)ssl3$(DLL_SUFFIX) \
++	$(DLL_PREFIX)smime3$(DLL_SUFFIX) \
+ 	$(NULL)
+ 
+ ifeq (,$(filter-out WINNT WINCE,$(OS_ARCH)))
+ DEPENDENT_LIBS_LIST += js$(MOZ_BITS)$(VERSION_NUMBER)$(DLL_SUFFIX)
+ else
+-DEPENDENT_LIBS_LIST += $(LIB_PREFIX)mozjs$(DLL_SUFFIX)
++DEPENDENT_LIBS_LIST += $(DLL_PREFIX)mozjs$(DLL_SUFFIX)
+ endif
+ 
+ ifeq (Darwin,$(OS_ARCH))
+@@ -112,7 +112,7 @@ EXTRA_DSO_LDOPTS += $(DIST)/bin/XUL
+ DEPENDENT_LIBS_LIST += XUL
+ else
+ EXTRA_DSO_LIBS = xul
+-DEPENDENT_LIBS_LIST += $(LIB_PREFIX)xul$(DLL_SUFFIX)
++DEPENDENT_LIBS_LIST += $(DLL_PREFIX)xul$(DLL_SUFFIX)
+ endif
+ 
+ else #!MOZ_ENABLE_LIBXUL
+@@ -122,7 +122,7 @@ EXTRA_DSO_LIBS = xpcomcor
+ DEPENDENT_LIBS_LIST += xpcomcor.dll
+ else
+ EXTRA_DSO_LIBS = xpcom_core
+-DEPENDENT_LIBS_LIST += $(LIB_PREFIX)xpcom_core$(DLL_SUFFIX)
++DEPENDENT_LIBS_LIST += $(DLL_PREFIX)xpcom_core$(DLL_SUFFIX)
+ endif
+ 
+ endif
