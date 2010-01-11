@@ -336,22 +336,6 @@
 +LOCAL_INCLUDES = -I$(srcdir)/../util -I$(srcdir)/../src -I.
  
  include $(topsrcdir)/config/rules.mk
---- origsrc/mozilla/xpcom/base/nsUUIDGenerator.cpp	2006-08-15 14:28:12.000000000 -0500
-+++ src/mozilla/xpcom/base/nsUUIDGenerator.cpp	2008-05-11 22:21:40.656250000 -0500
-@@ -52,6 +52,13 @@
- 
- #include "nsUUIDGenerator.h"
- 
-+#ifdef __CYGWIN__
-+extern "C" {
-+char *initstate(unsigned long seed, char *arg_state, long n);
-+char *setstate(char *state);
-+}
-+#endif
-+
- NS_IMPL_THREADSAFE_ISUPPORTS1(nsUUIDGenerator, nsIUUIDGenerator)
- 
- nsUUIDGenerator::nsUUIDGenerator()
 --- origsrc/mozilla/xpcom/build/nsXPCOMPrivate.h	2006-01-09 13:03:09.000000000 -0600
 +++ src/mozilla/xpcom/build/nsXPCOMPrivate.h	2008-05-12 07:38:59.734375000 -0500
 @@ -210,6 +210,16 @@

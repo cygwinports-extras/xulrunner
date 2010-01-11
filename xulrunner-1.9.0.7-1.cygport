@@ -1,9 +1,6 @@
 DESCRIPTION="Mozilla runtime package that can be used to bootstrap XUL+XPCOM applications"
 HOMEPAGE="http://developer.mozilla.org/en/docs/XULRunner"
-SRC_URI="
-	mirror://gentoo/${P}-source.tar.bz2
-	mirror://gentoo/${PN}-1.8.1.13-patches-0.1.tar.bz2
-"
+SRC_URI="http://releases.mozilla.org/pub/mozilla.org/${PN}/releases/${PV}/source/${P}-source.tar.bz2"
 SRC_DIR="mozilla"
 
 # export USE_PTHREADS=1
@@ -24,11 +21,6 @@ PKG_CONTENTS[1]="usr/bin/${PN}-config usr/include/ usr/lib/pkgconfig/
                  ${MOZILLA_FIVE_HOME#/}/*.dll.a usr/share/idl/"
 
 DIFF_EXCLUDES="calendar mail mailnews nsprpub nss sun-java"
-
-CYGPORT_USE_UNSTABLE_API=1
-src_unpack_hook() {
-	cygpatch ../patch/*
-}
 
 src_compile() {
 	cd ${S}
